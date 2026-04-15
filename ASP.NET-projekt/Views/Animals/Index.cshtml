@@ -1,0 +1,52 @@
+@model IEnumerable<ASP.NET_projekt.ViewModels.AnimalListItemViewModel>
+@{
+    ViewData["Title"] = "All Animals";
+}
+
+<section class="entity-page">
+    <header class="entity-header">
+        <div>
+            <h1 class="entity-title">All Animals</h1>
+            <p class="entity-subtitle">Browse every animal in the zoo and open a profile for full details.</p>
+        </div>
+        <div class="entity-actions">
+            <span class="entity-count-badge">@Model.Count() animals</span>
+        </div>
+    </header>
+
+    <div class="entity-grid">
+        @{ var index = 0; }
+        @foreach (var animal in Model)
+        {
+            <article class="entity-card" style="animation-delay:@(index * 40)ms">
+                <div class="entity-card__head">
+                    <h2 class="entity-card__title">@animal.Name</h2>
+                    <p class="entity-card__subtitle">@animal.Species</p>
+                </div>
+
+                <div class="entity-card__chips">
+                    <span class="entity-chip entity-chip--diet entity-chip--diet-@animal.Diet.ToString().ToLowerInvariant()">@animal.Diet</span>
+                    <span class="entity-chip @(animal.MedicalRecordsCount > 0 ? "entity-chip--success" : "entity-chip--warning")">
+                        @(animal.MedicalRecordsCount > 0 ? "Medical history available" : "No medical records")
+                    </span>
+                </div>
+
+                <dl class="entity-card__meta">
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Age</dt>
+                        <dd class="entity-meta-value">@animal.Age years</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Enclosure</dt>
+                        <dd class="entity-meta-value">@animal.EnclosureName</dd>
+                    </div>
+                </dl>
+
+                <div class="entity-card__footer">
+                    <a class="card-link entity-link" asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id">View details</a>
+                </div>
+            </article>
+            index++;
+        }
+    </div>
+</section>

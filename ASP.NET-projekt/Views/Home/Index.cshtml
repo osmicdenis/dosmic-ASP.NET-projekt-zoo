@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Zoo Manager";
+}
+
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>Hello Zoo Manager</h1>
+        <p class="hero-subtitle">Manage your zoo operations efficiently and effectively</p>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+        <article class="action-card">
+            <h3>Animals</h3>
+            <p>View and manage animal records</p>
+            <a asp-controller="Animals" asp-action="Index" class="card-link">Manage Animals</a>
+        </article>
+        <article class="action-card">
+            <h3>Staff</h3>
+            <p>Oversee zookeepers and veterinarians</p>
+            <a asp-controller="Staff" asp-action="Index" class="card-link">Manage Staff</a>
+        </article>
+        <article class="action-card">
+            <h3>Enclosures</h3>
+            <p>Monitor habitat conditions</p>
+            <a asp-controller="Enclosures" asp-action="Index" class="card-link">Manage Enclosures</a>
+        </article>
+        <article class="action-card">
+            <h3>Feeding Schedule</h3>
+            <p>Track feeding and nutrition</p>
+            <a asp-controller="Feedings" asp-action="Index" class="card-link">View Schedule</a>
+        </article>
+        <article class="action-card">
+            <h3>Interactive Zoo Map</h3>
+            <p>Explore enclosures visually and inspect animals on hover or click</p>
+            <a asp-controller="ZooMap" asp-action="Index" class="card-link">Open Map</a>
+        </article>
+    </div>
+</section>

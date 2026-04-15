@@ -1,0 +1,54 @@
+@model IEnumerable<ASP.NET_projekt.ViewModels.EnclosureListItemViewModel>
+@{
+    ViewData["Title"] = "All Enclosures";
+}
+
+<section class="entity-page">
+    <header class="entity-header">
+        <div>
+            <h1 class="entity-title">All Enclosures</h1>
+            <p class="entity-subtitle">View every habitat in the zoo, with occupancy and assigned care staff.</p>
+        </div>
+        <div class="entity-actions">
+            <span class="entity-count-badge">@Model.Count() enclosures</span>
+        </div>
+    </header>
+
+    <div class="entity-grid">
+        @{ var index = 0; }
+        @foreach (var enclosure in Model)
+        {
+            <article class="entity-card" style="animation-delay:@(index * 40)ms">
+                <div class="entity-card__head">
+                    <h2 class="entity-card__title">@enclosure.Name</h2>
+                    <p class="entity-card__subtitle">@enclosure.ZooName</p>
+                </div>
+
+                <div class="entity-card__chips">
+                    <span class="entity-chip entity-chip--role">@enclosure.Type</span>
+                    <span class="entity-chip @enclosure.OccupancyStatusClass">@enclosure.OccupancyStatusText</span>
+                </div>
+
+                <dl class="entity-card__meta">
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Capacity</dt>
+                        <dd class="entity-meta-value">@enclosure.Capacity</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Occupancy</dt>
+                        <dd class="entity-meta-value">@enclosure.OccupancyDisplay</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Assigned zookeeper</dt>
+                        <dd class="entity-meta-value">@enclosure.ZookeeperName</dd>
+                    </div>
+                </dl>
+
+                <div class="entity-card__footer">
+                    <a class="card-link entity-link" asp-controller="Enclosures" asp-action="Details" asp-route-id="@enclosure.Id">View details</a>
+                </div>
+            </article>
+            index++;
+        }
+    </div>
+</section>

@@ -1,0 +1,96 @@
+@model ASP.NET_projekt.ViewModels.AnimalDetailsViewModel
+@{
+    ViewData["Title"] = "Animal Details";
+
+    var today = DateTime.Today;
+    var age = today.Year - Model.Animal.DateOfBirth.Year;
+    if (Model.Animal.DateOfBirth.Date > today.AddYears(-age))
+    {
+        age--;
+    }
+}
+
+<section class="entity-page">
+    <a class="entity-back-link" asp-controller="Animals" asp-action="Index">Back to all animals</a>
+
+    <header class="entity-hero">
+        <div>
+            <h1 class="entity-title">@Model.Animal.Name</h1>
+            <p class="entity-subtitle">@Model.Animal.Species</p>
+            <div class="entity-card__chips">
+                <span class="entity-chip entity-chip--diet entity-chip--diet-@Model.Animal.Diet.ToString().ToLowerInvariant()">@Model.Animal.Diet</span>
+                <span class="entity-chip entity-chip--success">In care</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="entity-snapshot-grid" aria-label="Animal snapshot">
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Age</p>
+            <p class="entity-meta-value">@age years</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Date of birth</p>
+            <p class="entity-meta-value">@Model.Animal.DateOfBirth.ToString("dd MMM yyyy")</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Date of arrival</p>
+            <p class="entity-meta-value">@Model.Animal.DateOfArrival.ToString("dd MMM yyyy")</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Enclosure</p>
+            <p class="entity-meta-value">@Model.EnclosureName</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Enclosure type</p>
+            <p class="entity-meta-value">@Model.EnclosureType</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Assigned zookeeper</p>
+            <p class="entity-meta-value">@Model.ZookeeperName</p>
+        </article>
+    </section>
+
+    <section class="entity-details-layout">
+        <article class="entity-details-main">
+            <h2>Medical records</h2>
+            @if (Model.Animal.MedicalRecords.Any())
+            {
+                <div class="entity-timeline">
+                    @foreach (var record in Model.Animal.MedicalRecords.OrderByDescending(r => r.ExaminationDate))
+                    {
+                        <article class="entity-timeline-item">
+                            <h3>@record.Diagnosis</h3>
+                            <p><strong>Therapy:</strong> @record.Therapy</p>
+                            <p><strong>Veterinarian:</strong> @record.Veterinarian.FirstName @record.Veterinarian.LastName</p>
+                            <p><strong>Date:</strong> @record.ExaminationDate.ToString("dd MMM yyyy HH:mm")</p>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No medical records available for this animal.</p>
+            }
+        </article>
+
+        <aside class="entity-details-aside">
+            <h2>Other animals in the same enclosure</h2>
+            @if (Model.EnclosureMates.Any())
+            {
+                <ul class="entity-related-list">
+                    @foreach (var mate in Model.EnclosureMates)
+                    {
+                        <li>
+                            <a asp-controller="Animals" asp-action="Details" asp-route-id="@mate.Id">@mate.Name (@mate.Species)</a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>This animal currently has no enclosure mates.</p>
+            }
+        </aside>
+    </section>
+</section>

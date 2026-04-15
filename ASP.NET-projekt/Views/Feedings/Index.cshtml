@@ -1,0 +1,58 @@
+@model IEnumerable<ASP.NET_projekt.ViewModels.FeedingListItemViewModel>
+@{
+    ViewData["Title"] = "Feeding Schedule";
+}
+
+<section class="entity-page">
+    <header class="entity-header">
+        <div>
+            <h1 class="entity-title">Feeding Schedule</h1>
+            <p class="entity-subtitle">Track all scheduled and completed feedings across the zoo.</p>
+        </div>
+        <div class="entity-actions">
+            <span class="entity-count-badge">@Model.Count() feedings</span>
+        </div>
+    </header>
+
+    <div class="entity-grid">
+        @{ var index = 0; }
+        @foreach (var feeding in Model)
+        {
+            <article class="entity-card" style="animation-delay:@(index * 40)ms">
+                <div class="entity-card__head">
+                    <h2 class="entity-card__title">@feeding.AnimalName</h2>
+                    <p class="entity-card__subtitle">@feeding.AnimalSpecies</p>
+                </div>
+
+                <div class="entity-card__chips">
+                    <span class="entity-chip entity-chip--diet entity-chip--diet-@feeding.Diet.ToString().ToLowerInvariant()">@feeding.Diet</span>
+                    <span class="entity-chip @feeding.StatusClass">@feeding.StatusText</span>
+                </div>
+
+                <dl class="entity-card__meta">
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Food</dt>
+                        <dd class="entity-meta-value">@feeding.FoodName</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Time</dt>
+                        <dd class="entity-meta-value">@feeding.FeedingTime.ToString("dd MMM yyyy HH:mm")</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Enclosure</dt>
+                        <dd class="entity-meta-value">@feeding.EnclosureName</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Zookeeper</dt>
+                        <dd class="entity-meta-value">@feeding.ZookeeperName</dd>
+                    </div>
+                </dl>
+
+                <div class="entity-card__footer">
+                    <a class="card-link entity-link" asp-controller="Feedings" asp-action="Details" asp-route-id="@feeding.Id">View details</a>
+                </div>
+            </article>
+            index++;
+        }
+    </div>
+</section>

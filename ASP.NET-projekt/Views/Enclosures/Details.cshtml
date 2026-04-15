@@ -1,0 +1,76 @@
+@model ASP.NET_projekt.ViewModels.EnclosureDetailsViewModel
+@{
+    ViewData["Title"] = "Enclosure Details";
+}
+
+<section class="entity-page">
+    <a class="entity-back-link" asp-controller="Enclosures" asp-action="Index">Back to all enclosures</a>
+
+    <header class="entity-hero">
+        <div>
+            <h1 class="entity-title">@Model.Enclosure.Name</h1>
+            <p class="entity-subtitle">@Model.ZooName</p>
+            <div class="entity-card__chips">
+                <span class="entity-chip entity-chip--role">@Model.Enclosure.Type</span>
+                <span class="entity-chip @Model.OccupancyStatusClass">@Model.OccupancyStatusText</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="entity-snapshot-grid" aria-label="Enclosure snapshot">
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Type</p>
+            <p class="entity-meta-value">@Model.Enclosure.Type</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Capacity</p>
+            <p class="entity-meta-value">@Model.Capacity</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Occupancy</p>
+            <p class="entity-meta-value">@Model.OccupancyDisplay</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Assigned zookeeper</p>
+            <p class="entity-meta-value">@Model.ZookeeperName</p>
+        </article>
+    </section>
+
+    <section class="entity-details-layout">
+        <article class="entity-details-main">
+            <h2>Animals in this enclosure</h2>
+            @if (Model.Enclosure.Animals.Any())
+            {
+                <div class="entity-timeline">
+                    @foreach (var animal in Model.Enclosure.Animals.OrderBy(a => a.Name))
+                    {
+                        <article class="entity-timeline-item">
+                            <h3>@animal.Name</h3>
+                            <p><strong>Species:</strong> @animal.Species</p>
+                            <p><strong>Diet:</strong> @animal.Diet</p>
+                            <p><strong>Arrived:</strong> @animal.DateOfArrival.ToString("dd MMM yyyy")</p>
+                            <p>
+                                <a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id">Open animal profile</a>
+                            </p>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No animals are currently assigned to this enclosure.</p>
+            }
+        </article>
+
+        <aside class="entity-details-aside">
+            <h2>Care staff</h2>
+            <ul class="entity-related-list">
+                <li>
+                    <a asp-controller="Staff" asp-action="Details" asp-route-role="zookeeper" asp-route-id="@Model.Enclosure.Zookeeper.Id">
+                        @Model.ZookeeperName (Zookeeper)
+                    </a>
+                </li>
+            </ul>
+        </aside>
+    </section>
+</section>
