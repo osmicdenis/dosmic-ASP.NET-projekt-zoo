@@ -1,0 +1,49 @@
+@model IEnumerable<ASP.NET_projekt.ViewModels.StaffListItemViewModel>
+@{
+    ViewData["Title"] = "All Staff";
+}
+
+<section class="entity-page">
+    <header class="entity-header">
+        <div>
+            <h1 class="entity-title">All Staff</h1>
+            <p class="entity-subtitle">Browse all zookeepers and veterinarians, then open a profile for full details.</p>
+        </div>
+        <div class="entity-actions">
+            <span class="entity-count-badge">@Model.Count() staff members</span>
+        </div>
+    </header>
+
+    <div class="entity-grid">
+        @{ var index = 0; }
+        @foreach (var staff in Model)
+        {
+            <article class="entity-card" style="animation-delay:@(index * 40)ms">
+                <div class="entity-card__head">
+                    <h2 class="entity-card__title">@staff.FullName</h2>
+                    <p class="entity-card__subtitle">@staff.Subtitle</p>
+                </div>
+
+                <div class="entity-card__chips">
+                    <span class="entity-chip entity-chip--role">@staff.Role</span>
+                    <span class="entity-chip @staff.StatusClass">@staff.StatusText</span>
+                </div>
+
+                <dl class="entity-card__meta">
+                    @foreach (var item in staff.MetaItems)
+                    {
+                        <div class="entity-meta-row">
+                            <dt class="entity-meta-label">@item.Key</dt>
+                            <dd class="entity-meta-value">@item.Value</dd>
+                        </div>
+                    }
+                </dl>
+
+                <div class="entity-card__footer">
+                    <a class="card-link entity-link" asp-controller="Staff" asp-action="Details" asp-route-role="@staff.Role.ToLowerInvariant()" asp-route-id="@staff.Id">View details</a>
+                </div>
+            </article>
+            index++;
+        }
+    </div>
+</section>

@@ -1,0 +1,89 @@
+@model ASP.NET_projekt.ViewModels.FeedingDetailsViewModel
+@{
+    ViewData["Title"] = "Feeding Details";
+}
+
+<section class="entity-page">
+    <a class="entity-back-link" asp-controller="Feedings" asp-action="Index">Back to feeding schedule</a>
+
+    <header class="entity-hero">
+        <div>
+            <h1 class="entity-title">@Model.Feeding.Animal.Name</h1>
+            <p class="entity-subtitle">@Model.Feeding.Animal.Species • @Model.ZooName</p>
+            <div class="entity-card__chips">
+                <span class="entity-chip entity-chip--diet entity-chip--diet-@Model.Feeding.Animal.Diet.ToString().ToLowerInvariant()">@Model.Feeding.Animal.Diet</span>
+                <span class="entity-chip @Model.StatusClass">@Model.StatusText</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="entity-snapshot-grid" aria-label="Feeding snapshot">
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Food</p>
+            <p class="entity-meta-value">@Model.Feeding.Food.Name</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Feeding time</p>
+            <p class="entity-meta-value">@Model.Feeding.FeedingTime.ToString("dd MMM yyyy HH:mm")</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Enclosure</p>
+            <p class="entity-meta-value">@Model.EnclosureName</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Enclosure type</p>
+            <p class="entity-meta-value">@Model.EnclosureType</p>
+        </article>
+        <article class="entity-snapshot-item">
+            <p class="entity-meta-label">Assigned zookeeper</p>
+            <p class="entity-meta-value">@Model.ZookeeperName</p>
+        </article>
+    </section>
+
+    <section class="entity-details-layout">
+        <article class="entity-details-main">
+            <h2>Current feeding</h2>
+            <div class="entity-timeline">
+                <article class="entity-timeline-item">
+                    <h3>@Model.Feeding.Food.Name</h3>
+                    <p><strong>Animal:</strong> @Model.Feeding.Animal.Name (@Model.Feeding.Animal.Species)</p>
+                    <p><strong>Diet:</strong> @Model.Feeding.Animal.Diet</p>
+                    <p><strong>Scheduled time:</strong> @Model.Feeding.FeedingTime.ToString("dd MMM yyyy HH:mm")</p>
+                </article>
+            </div>
+
+            <h2>Other feedings for this animal</h2>
+            @if (Model.OtherFeedingsForAnimal.Any())
+            {
+                <div class="entity-timeline">
+                    @foreach (var feeding in Model.OtherFeedingsForAnimal)
+                    {
+                        <article class="entity-timeline-item">
+                            <h3>@feeding.Food.Name</h3>
+                            <p><strong>Time:</strong> @feeding.FeedingTime.ToString("dd MMM yyyy HH:mm")</p>
+                            <p>
+                                <a asp-controller="Feedings" asp-action="Details" asp-route-id="@feeding.Id">Open feeding details</a>
+                            </p>
+                        </article>
+                    }
+                </div>
+            }
+            else
+            {
+                <p>No additional feeding records for this animal.</p>
+            }
+        </article>
+
+        <aside class="entity-details-aside">
+            <h2>Related profiles</h2>
+            <ul class="entity-related-list">
+                <li>
+                    <a asp-controller="Animals" asp-action="Details" asp-route-id="@Model.Feeding.AnimalId">@Model.Feeding.Animal.Name (Animal)</a>
+                </li>
+                <li>
+                    <a asp-controller="Enclosures" asp-action="Index">Browse all enclosures</a>
+                </li>
+            </ul>
+        </aside>
+    </section>
+</section>

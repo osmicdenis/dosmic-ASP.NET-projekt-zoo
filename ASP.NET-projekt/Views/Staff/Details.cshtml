@@ -1,0 +1,97 @@
+@model ASP.NET_projekt.ViewModels.StaffDetailsViewModel
+@{
+    ViewData["Title"] = "Staff Details";
+}
+
+<section class="entity-page">
+    <a class="entity-back-link" asp-controller="Staff" asp-action="Index">Back to all staff</a>
+
+    <header class="entity-hero">
+        <div>
+            <h1 class="entity-title">@Model.FullName</h1>
+            <p class="entity-subtitle">@Model.Subtitle</p>
+            <div class="entity-card__chips">
+                <span class="entity-chip entity-chip--role">@Model.Role</span>
+                <span class="entity-chip @Model.StatusClass">@Model.StatusText</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="entity-snapshot-grid" aria-label="Staff snapshot">
+        @foreach (var item in Model.SnapshotItems)
+        {
+            <article class="entity-snapshot-item">
+                <p class="entity-meta-label">@item.Key</p>
+                <p class="entity-meta-value">@item.Value</p>
+            </article>
+        }
+    </section>
+
+    <section class="entity-details-layout">
+        <article class="entity-details-main">
+            @if (Model.Role == "Zookeeper")
+            {
+                <h2>Assigned enclosures</h2>
+                @if (Model.AssignedEnclosures.Any())
+                {
+                    <div class="entity-timeline">
+                        @foreach (var enclosure in Model.AssignedEnclosures)
+                        {
+                            <article class="entity-timeline-item">
+                                <h3>@enclosure.Name</h3>
+                                <p><strong>Type:</strong> @enclosure.Type</p>
+                                <p><strong>Capacity:</strong> @enclosure.Capacity</p>
+                                <p><strong>Animals:</strong> @enclosure.Animals.Count</p>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No enclosure assignments available.</p>
+                }
+            }
+            else
+            {
+                <h2>Medical records</h2>
+                @if (Model.MedicalRecords.Any())
+                {
+                    <div class="entity-timeline">
+                        @foreach (var record in Model.MedicalRecords)
+                        {
+                            <article class="entity-timeline-item">
+                                <h3>@record.Diagnosis</h3>
+                                <p><strong>Animal:</strong> @record.Animal.Name (@record.Animal.Species)</p>
+                                <p><strong>Therapy:</strong> @record.Therapy</p>
+                                <p><strong>Date:</strong> @record.ExaminationDate.ToString("dd MMM yyyy HH:mm")</p>
+                            </article>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No medical records available for this veterinarian.</p>
+                }
+            }
+        </article>
+
+        <aside class="entity-details-aside">
+            <h2>Animals in care</h2>
+            @if (Model.AssignedAnimals.Any())
+            {
+                <ul class="entity-related-list">
+                    @foreach (var animal in Model.AssignedAnimals)
+                    {
+                        <li>
+                            <a asp-controller="Animals" asp-action="Details" asp-route-id="@animal.Id">@animal.Name (@animal.Species)</a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>No assigned animals at the moment.</p>
+            }
+        </aside>
+    </section>
+</section>

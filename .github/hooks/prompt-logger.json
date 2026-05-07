@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "windows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\log-hook.ps1"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "windows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .github\\hooks\\log-hook.ps1"
+      }
+    ]
+  }
+}

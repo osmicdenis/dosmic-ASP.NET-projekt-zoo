@@ -1,0 +1,170 @@
+@model ASP.NET_projekt.ViewModels.ZooMapViewModel
+@{
+    ViewData["Title"] = "Interactive Zoo Map";
+    var firstSpot = Model.Hotspots.FirstOrDefault();
+}
+
+<section class="entity-page zoo-map-page">
+    <header class="entity-header">
+        <div>
+            <h1 class="entity-title">Interactive Zoo Map</h1>
+            <p class="entity-subtitle">Hover or click an enclosure hotspot to preview animals, then open full enclosure details.</p>
+            <p class="zoo-map-hint">Tip: use keyboard Tab to move between hotspots, then Enter or click to inspect one.</p>
+        </div>
+        <div class="entity-actions">
+            <span class="entity-count-badge">@Model.Hotspots.Count mapped enclosures</span>
+        </div>
+    </header>
+
+    @if (!Model.Hotspots.Any())
+    {
+        <article class="entity-card">
+            <h2 class="entity-card__title">Map unavailable</h2>
+            <p>No enclosures are currently mapped. Add enclosure hotspots in the map configuration to enable interaction.</p>
+        </article>
+    }
+    else
+    {
+        <div class="zoo-map-layout" data-zoo-map>
+            <div class="zoo-map-canvas" role="img" aria-label="Zoo map with enclosure hotspots">
+                <img src="@Model.MapImagePath" alt="Zoo map" class="zoo-map-image" />
+
+                @foreach (var spot in Model.Hotspots)
+                {
+                    <button
+                        type="button"
+                        class="zoo-hotspot"
+                        style="left:@spot.LeftPercent%; top:@spot.TopPercent%;"
+                        data-enclosure-id="@spot.EnclosureId"
+                        data-enclosure-name="@spot.EnclosureName"
+                        data-enclosure-type="@spot.EnclosureType"
+                        data-occupancy="@spot.OccupancyDisplay"
+                        data-zookeeper="@spot.ZookeeperName"
+                        data-capacity="@spot.Capacity"
+                        data-animal-count="@spot.AnimalCount"
+                        data-status-text="@spot.OccupancyStatusText"
+                        data-status-class="@spot.OccupancyStatusClass"
+                        data-details-url="@Url.Action("Details", "Enclosures", new { id = spot.EnclosureId })"
+                        data-animals="@string.Join("|", spot.AnimalSummaries)"
+                        aria-label="@($"{spot.EnclosureName} hotspot")">
+                        <span class="zoo-hotspot__dot" aria-hidden="true"></span>
+                        <span class="zoo-hotspot__label">@spot.EnclosureName</span>
+                    </button>
+                }
+            </div>
+
+            <aside class="zoo-map-panel entity-card" data-map-panel>
+                <h2 class="entity-card__title" data-panel-name>@firstSpot?.EnclosureName</h2>
+                <p class="entity-card__subtitle" data-panel-type>@firstSpot?.EnclosureType</p>
+
+                <div class="entity-card__chips">
+                    <span class="entity-chip @(firstSpot?.OccupancyStatusClass ?? "entity-chip--role")" data-panel-status>
+                        @firstSpot?.OccupancyStatusText
+                    </span>
+                </div>
+
+                <dl class="entity-card__meta">
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Occupancy</dt>
+                        <dd class="entity-meta-value" data-panel-occupancy>@firstSpot?.OccupancyDisplay</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Animals</dt>
+                        <dd class="entity-meta-value" data-panel-animal-count>@firstSpot?.AnimalCount</dd>
+                    </div>
+                    <div class="entity-meta-row">
+                        <dt class="entity-meta-label">Assigned zookeeper</dt>
+                        <dd class="entity-meta-value" data-panel-zookeeper>@firstSpot?.ZookeeperName</dd>
+                    </div>
+                </dl>
+
+                <h3>Animals in this enclosure</h3>
+                <ul class="entity-related-list" data-panel-animals>
+                    @if (firstSpot != null)
+                    {
+                        @foreach (var animal in firstSpot.AnimalSummaries)
+                        {
+                            <li>@animal</li>
+                        }
+                    }
+                </ul>
+
+                <div class="entity-card__footer">
+                    <a class="card-link entity-link" href="@Url.Action("Details", "Enclosures", new { id = firstSpot?.EnclosureId })" data-panel-details-link>
+                        Open enclosure details
+                    </a>
+                </div>
+            </aside>
+        </div>
+    }
+</section>
+
+@section Scripts {
+    <script>
+        (() => {
+            const map = document.querySelector('[data-zoo-map]');
+            if (!map) {
+                return;
+            }
+
+            const panelName = map.querySelector('[data-panel-name]');
+            const panelType = map.querySelector('[data-panel-type]');
+            const panelStatus = map.querySelector('[data-panel-status]');
+            const panelOccupancy = map.querySelector('[data-panel-occupancy]');
+            const panelAnimalCount = map.querySelector('[data-panel-animal-count]');
+            const panelZookeeper = map.querySelector('[data-panel-zookeeper]');
+            const panelAnimals = map.querySelector('[data-panel-animals]');
+            const panelDetailsLink = map.querySelector('[data-panel-details-link]');
+
+            const hotspots = Array.from(map.querySelectorAll('.zoo-hotspot'));
+
+            const setActiveHotspot = (hotspot) => {
+                hotspots.forEach((spot) => {
+                    const isActive = spot === hotspot;
+                    spot.classList.toggle('is-active', isActive);
+                    spot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+            };
+
+            const updatePanel = (hotspot) => {
+                if (!hotspot) {
+                    return;
+                }
+
+                panelName.textContent = hotspot.dataset.enclosureName;
+                panelType.textContent = hotspot.dataset.enclosureType;
+                panelStatus.textContent = hotspot.dataset.statusText;
+                panelStatus.className = `entity-chip ${hotspot.dataset.statusClass}`;
+                panelOccupancy.textContent = hotspot.dataset.occupancy;
+                panelAnimalCount.textContent = hotspot.dataset.animalCount;
+                panelZookeeper.textContent = hotspot.dataset.zookeeper;
+                panelDetailsLink.setAttribute('href', hotspot.dataset.detailsUrl);
+
+                const animals = (hotspot.dataset.animals || '').split('|').filter(Boolean);
+                panelAnimals.innerHTML = '';
+                for (const animal of animals) {
+                    const li = document.createElement('li');
+                    li.textContent = animal;
+                    panelAnimals.appendChild(li);
+                }
+
+                setActiveHotspot(hotspot);
+            };
+
+            hotspots.forEach((hotspot) => {
+                hotspot.addEventListener('mouseenter', () => updatePanel(hotspot));
+                hotspot.addEventListener('focus', () => updatePanel(hotspot));
+                hotspot.addEventListener('click', () => {
+                    updatePanel(hotspot);
+                    if (window.matchMedia('(max-width: 767px)').matches) {
+                        map.querySelector('[data-map-panel]')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                });
+            });
+
+            if (hotspots.length > 0) {
+                updatePanel(hotspots[0]);
+            }
+        })();
+    </script>
+}
