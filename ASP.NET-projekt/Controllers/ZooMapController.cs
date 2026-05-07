@@ -17,19 +17,16 @@ namespace ASP.NET_projekt.Controllers
         {
             var hotspotPositions = new Dictionary<string, (double Left, double Top)>
             {
-                ["Lion Rock"] = (66.5, 36.0),
-                ["Gorilla Grove"] = (33.0, 34.0),
-                ["Reptile House"] = (44.0, 44.5),
-                ["Elephant Plains"] = (72.5, 27.0),
-                ["Giraffe Terrace"] = (52.0, 33.0),
-                ["Parrot Aviary"] = (20.5, 41.5)
+                ["African Savanna"] = (66.5, 36.0),
+                ["Jungle Canopy"] = (33.0, 34.0),
+                ["Arctic Zone"] = (44.0, 44.5),
+                ["Marine Aquarium"] = (72.5, 27.0)
             };
 
             var hotspots = _zooRepository.GetAllEnclosures()
-                .Where(enclosure => hotspotPositions.ContainsKey(enclosure.Name))
                 .Select(enclosure =>
                 {
-                    var position = hotspotPositions[enclosure.Name];
+                    hotspotPositions.TryGetValue(enclosure.Name, out var position);
                     var animalCount = enclosure.Animals.Count;
                     var occupancyText = $"{animalCount}/{enclosure.Capacity}";
                     var occupancyStatus = animalCount >= enclosure.Capacity

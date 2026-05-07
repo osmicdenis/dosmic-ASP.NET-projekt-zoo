@@ -566,11 +566,13 @@ main {
   border: 0;
   background: transparent;
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 6px;
-  min-height: 44px;
-  padding: 4px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  overflow: visible;
 }
 
 .zoo-hotspot__dot {
@@ -584,6 +586,10 @@ main {
 }
 
 .zoo-hotspot__label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: 13px;
   display: inline-block;
   background-color: rgba(255, 255, 255, 0.95);
   color: var(--color-text);
@@ -594,7 +600,7 @@ main {
   font-weight: 600;
   white-space: nowrap;
   opacity: 0;
-  transform: translateY(2px);
+  transform: translateY(calc(-50% + 2px));
   pointer-events: none;
   transition: opacity 0.14s cubic-bezier(0.2, 0, 0, 1), transform 0.14s cubic-bezier(0.2, 0, 0, 1);
 }
@@ -609,7 +615,7 @@ main {
 .zoo-hotspot:focus-visible .zoo-hotspot__label,
 .zoo-hotspot.is-active .zoo-hotspot__label {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(-50%);
 }
 
 .zoo-hotspot:focus-visible {

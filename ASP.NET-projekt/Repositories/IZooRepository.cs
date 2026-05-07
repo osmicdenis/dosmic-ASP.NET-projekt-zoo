@@ -40,5 +40,10 @@ namespace ASP.NET_projekt.Repositories
         IEnumerable<Feeding> GetAllFeedings();
         Feeding? GetFeedingById(int id);
         IEnumerable<Feeding> GetFeedingsByAnimalId(int animalId);
+
+        // CRUD Methods for Animals
+        void AddAnimal(Animal animal);
+        void UpdateAnimal(Animal animal);
+        void SaveChanges();
     }
 }

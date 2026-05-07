@@ -1,14 +1,29 @@
 using ASP.NET_projekt.Models;
 using ASP.NET_projekt.Repositories;
+using ASP.NET_projekt.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IZooRepository, MockZooRepository>();
+
+// Configure Entity Framework DbContext
+builder.Services.AddDbContext<ZooDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("ZooDbContext"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.MigrationsAssembly("ASP.NET-projekt");
+        }));
+
+// Register EF Repository (replaces MockRepository)
+builder.Services.AddScoped<IZooRepository, EfZooRepository>();
 
 var app = builder.Build();
 
+// Note: Repository test code commented out - will be replaced with EF Repository
+/*
 // Get repository from dependency injection
 var zooRepository = app.Services.GetRequiredService<IZooRepository>();
 
@@ -54,6 +69,7 @@ else
         Console.WriteLine();
     }
 }
+*/
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -69,6 +85,36 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "animals-list",
+    pattern: "animals",
+    defaults: new { controller = "Animals", action = "Index" });
+
+app.MapControllerRoute(
+    name: "animal-details",
+    pattern: "animals/{id:int}",
+    defaults: new { controller = "Animals", action = "Details" });
+
+app.MapControllerRoute(
+    name: "enclosure-details",
+    pattern: "enclosures/{id:int}",
+    defaults: new { controller = "Enclosures", action = "Details" });
+
+app.MapControllerRoute(
+    name: "feeding-schedule",
+    pattern: "feeding-schedule",
+    defaults: new { controller = "Feedings", action = "Index" });
+
+app.MapControllerRoute(
+    name: "staff-details",
+    pattern: "staff/{role}/{id:int}",
+    defaults: new { controller = "Staff", action = "Details" });
+
+app.MapControllerRoute(
+    name: "zoo-map",
+    pattern: "zoo-map",
+    defaults: new { controller = "ZooMap", action = "Index" });
 
 app.MapControllerRoute(
     name: "default",

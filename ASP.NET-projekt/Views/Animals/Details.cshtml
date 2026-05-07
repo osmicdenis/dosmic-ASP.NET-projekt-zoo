@@ -11,7 +11,10 @@
 }
 
 <section class="entity-page">
-    <a class="entity-back-link" asp-controller="Animals" asp-action="Index">Back to all animals</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a class="entity-back-link" asp-controller="Animals" asp-action="Index">Back to all animals</a>
+        <a href="@Url.Action("Edit", new { id = Model.Animal.Id })" class="btn btn-warning btn-sm">Edit Animal</a>
+    </div>
 
     <header class="entity-hero">
         <div>

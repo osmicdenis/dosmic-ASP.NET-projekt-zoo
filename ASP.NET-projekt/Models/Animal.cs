@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ASP.NET_projekt.Models
 {
     public class Animal
     {
+        [Key]
         public int Id { get; set; }
         public required string Name { get; set; }
         public required string Species { get; set; }
@@ -9,6 +12,12 @@ namespace ASP.NET_projekt.Models
         public DateTime DateOfArrival { get; set; }
         public DietType Diet { get; set; }
         
-        public List<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+        // Foreign key to Enclosure
+        public int? EnclosureId { get; set; }
+        public virtual Enclosure? Enclosure { get; set; }
+        
+        // Navigation properties
+        public virtual ICollection<MedicalRecord> MedicalRecords { get; set; } = new List<MedicalRecord>();
+        public virtual ICollection<Feeding> Feedings { get; set; } = new List<Feeding>();
     }
 }

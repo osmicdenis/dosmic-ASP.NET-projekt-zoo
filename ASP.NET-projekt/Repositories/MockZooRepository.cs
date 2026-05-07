@@ -223,5 +223,38 @@ namespace ASP.NET_projekt.Repositories
         public IEnumerable<Feeding> GetAllFeedings() => _feedings?.AsEnumerable() ?? Enumerable.Empty<Feeding>();
         public Feeding? GetFeedingById(int id) => _feedings?.FirstOrDefault(f => f.Id == id);
         public IEnumerable<Feeding> GetFeedingsByAnimalId(int animalId) => _feedings?.Where(f => f.AnimalId == animalId) ?? Enumerable.Empty<Feeding>();
+
+        // CRUD Methods for Animals
+        public void AddAnimal(Animal animal)
+        {
+            if (_animals != null)
+            {
+                animal.Id = (_animals.Count > 0 ? _animals.Max(a => a.Id) : 0) + 1;
+                _animals.Add(animal);
+            }
+        }
+
+        public void UpdateAnimal(Animal animal)
+        {
+            if (_animals != null)
+            {
+                var existingAnimal = _animals.FirstOrDefault(a => a.Id == animal.Id);
+                if (existingAnimal != null)
+                {
+                    existingAnimal.Name = animal.Name;
+                    existingAnimal.Species = animal.Species;
+                    existingAnimal.DateOfBirth = animal.DateOfBirth;
+                    existingAnimal.DateOfArrival = animal.DateOfArrival;
+                    existingAnimal.Diet = animal.Diet;
+                    existingAnimal.EnclosureId = animal.EnclosureId;
+                    existingAnimal.Enclosure = animal.Enclosure;
+                }
+            }
+        }
+
+        public void SaveChanges()
+        {
+            // Mock repository doesn't persist data
+        }
     }
 }
