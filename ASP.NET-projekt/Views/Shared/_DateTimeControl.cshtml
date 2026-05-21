@@ -1,0 +1,27 @@
+@model ASP.NET_projekt.ViewModels.DateTimeControlViewModel
+
+<div class="form-group mb-3 datetime-control">
+    <label for="@(Model.FieldName)__picker" class="form-label">@Model.LabelText</label>
+
+    <input type="hidden"
+           id="@Model.FieldName"
+           name="@Model.FieldName"
+           value="@Model.SelectedValue?.ToString("yyyy-MM-dd HH:mm")"
+           data-datetime-value />
+
+    <input type="text"
+           id="@(Model.FieldName)__picker"
+           class="form-control datetime-picker"
+           placeholder="@Model.Placeholder"
+           data-datetime-picker
+           data-field-name="@Model.FieldName"
+           data-enable-time="@Model.EnableTime.ToString().ToLowerInvariant()"
+           data-format="@Model.Format"
+           data-time-format="@Model.TimeFormat"
+           @if (Model.IsRequired) { <text>required</text> } />
+
+    @if (!string.IsNullOrWhiteSpace(Model.HelpText))
+    {
+        <small class="form-text text-muted d-block mt-2">@Model.HelpText</small>
+    }
+</div>

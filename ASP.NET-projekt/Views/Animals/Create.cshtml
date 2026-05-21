@@ -1,0 +1,98 @@
+@using ASP.NET_projekt.Models
+@model AnimalCreateEditViewModel
+
+@{
+    ViewData["Title"] = "Create New Animal";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>@ViewData["Title"]</h2>
+            <hr />
+
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" placeholder="Enter animal name" />
+                    <span asp-validation-for="Name" class="text-danger small"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Species" class="form-label"></label>
+                    <input asp-for="Species" class="form-control" placeholder="Enter species (e.g., Lion, Zebra)" />
+                    <span asp-validation-for="Species" class="text-danger small"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        @await Html.PartialAsync("_DateTimeControl", new DateTimeControlViewModel
+                        {
+                            FieldName = nameof(Model.DateOfBirth),
+                            LabelText = "Date of Birth",
+                            Placeholder = "Select date of birth",
+                            SelectedValue = Model.DateOfBirth != default ? Model.DateOfBirth : null,
+                            IsRequired = true,
+                            EnableTime = false,
+                            Format = "Y-m-d",
+                            HelpText = "Select the animal's birth date."
+                        })
+                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        @await Html.PartialAsync("_DateTimeControl", new DateTimeControlViewModel
+                        {
+                            FieldName = nameof(Model.DateOfArrival),
+                            LabelText = "Date of Arrival",
+                            Placeholder = "Select date of arrival",
+                            SelectedValue = Model.DateOfArrival != default ? Model.DateOfArrival : null,
+                            IsRequired = true,
+                            EnableTime = false,
+                            Format = "Y-m-d",
+                            HelpText = "Select when the animal arrived at the zoo."
+                        })
+                        <span asp-validation-for="DateOfArrival" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Diet" class="form-label"></label>
+                    <select asp-for="Diet" asp-items="Html.GetEnumSelectList<DietType>()" class="form-select">
+                        <option value="">-- Select Diet Type --</option>
+                    </select>
+                    <span asp-validation-for="Diet" class="text-danger small"></span>
+                </div>
+
+                @await Html.PartialAsync("_AutocompleteDropdown", new AutocompleteDropdownViewModel
+                {
+                    FieldName = nameof(Model.EnclosureId),
+                    LabelText = "Enclosure",
+                    Placeholder = "Search and select an enclosure (optional)",
+                    SearchUrl = Url.Action("Search", "Enclosures") ?? string.Empty,
+                    SelectedValue = Model.EnclosureId?.ToString(),
+                    SelectedText = Model.AvailableEnclosures.FirstOrDefault(e => e.Id == Model.EnclosureId)?.Name,
+                    ValueField = "id",
+                    LabelField = "name",
+                    QueryParam = "query",
+                    MinCharacters = 0,
+                    HelpText = "Type a few letters to find the matching enclosure."
+                })
+                <span asp-validation-for="EnclosureId" class="text-danger small"></span>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">Create Animal</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/animals-validation.js" asp-append-version="true"></script>
+}

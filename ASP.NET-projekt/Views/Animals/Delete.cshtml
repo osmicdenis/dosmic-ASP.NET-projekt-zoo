@@ -1,0 +1,57 @@
+@model AnimalDetailsViewModel
+
+@{
+    ViewData["Title"] = "Delete Animal";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Delete Animal</h2>
+            <hr />
+
+            <div class="alert alert-warning" role="alert">
+                <strong>Warning:</strong> Are you sure you want to delete this animal? This action cannot be undone.
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Name:</dt>
+                        <dd class="col-sm-9">@Model.Animal.Name</dd>
+
+                        <dt class="col-sm-3">Species:</dt>
+                        <dd class="col-sm-9">@Model.Animal.Species</dd>
+
+                        <dt class="col-sm-3">Diet Type:</dt>
+                        <dd class="col-sm-9">@Model.Animal.Diet</dd>
+
+                        <dt class="col-sm-3">Date of Birth:</dt>
+                        <dd class="col-sm-9">@Model.Animal.DateOfBirth.ToShortDateString()</dd>
+
+                        <dt class="col-sm-3">Date of Arrival:</dt>
+                        <dd class="col-sm-9">@Model.Animal.DateOfArrival.ToShortDateString()</dd>
+
+                        <dt class="col-sm-3">Enclosure:</dt>
+                        <dd class="col-sm-9">@Model.EnclosureName</dd>
+
+                        <dt class="col-sm-3">Enclosure Type:</dt>
+                        <dd class="col-sm-9">@Model.EnclosureType</dd>
+
+                        <dt class="col-sm-3">Zookeeper:</dt>
+                        <dd class="col-sm-9">@Model.ZookeeperName</dd>
+
+                        <dt class="col-sm-3">Medical Records:</dt>
+                        <dd class="col-sm-9">@Model.Animal.MedicalRecords.Count record(s)</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post" class="d-inline">
+                <input type="hidden" asp-for="Animal.Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>

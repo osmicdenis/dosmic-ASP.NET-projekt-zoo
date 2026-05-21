@@ -1,0 +1,48 @@
+@model FeedingDetailsViewModel
+
+@{
+    ViewData["Title"] = "Delete Feeding";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>Delete Feeding</h2>
+            <hr />
+
+            <div class="alert alert-warning" role="alert">
+                <strong>Warning:</strong> Are you sure you want to delete this feeding record? This action cannot be undone.
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Animal:</dt>
+                        <dd class="col-sm-9">@Model.Feeding.Animal.Name (@Model.Feeding.Animal.Species)</dd>
+
+                        <dt class="col-sm-3">Food:</dt>
+                        <dd class="col-sm-9">@Model.Feeding.Food.Name</dd>
+
+                        <dt class="col-sm-3">Feeding Time:</dt>
+                        <dd class="col-sm-9">@Model.Feeding.FeedingTime.ToString("dd MMM yyyy HH:mm")</dd>
+
+                        <dt class="col-sm-3">Enclosure:</dt>
+                        <dd class="col-sm-9">@Model.EnclosureName</dd>
+
+                        <dt class="col-sm-3">Zookeeper:</dt>
+                        <dd class="col-sm-9">@Model.ZookeeperName</dd>
+
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9"><span class="entity-chip @Model.StatusClass">@Model.StatusText</span></dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form asp-action="Delete" method="post" class="d-inline">
+                <input type="hidden" asp-for="Feeding.Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
