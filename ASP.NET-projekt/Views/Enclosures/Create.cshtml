@@ -1,0 +1,86 @@
+@model EnclosureCreateEditViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Create Enclosure" : "Edit Enclosure";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2>@ViewData["Title"]</h2>
+            <hr />
+
+            <form asp-action="@(Model.Id == 0 ? "Create" : "Edit")" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                @if (Model.Id != 0)
+                {
+                    <input type="hidden" asp-for="Id" />
+                }
+
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Type" class="form-label"></label>
+                    <input asp-for="Type" class="form-control" />
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Capacity" class="form-label"></label>
+                    <input asp-for="Capacity" class="form-control" type="number" />
+                    <span asp-validation-for="Capacity" class="text-danger"></span>
+                </div>
+
+                @await Html.PartialAsync("_AutocompleteDropdown", new AutocompleteDropdownViewModel
+                {
+                    FieldName = nameof(Model.ZooId),
+                    LabelText = "Zoo",
+                    Placeholder = "Search and select a zoo",
+                    SearchUrl = Url.Action("SearchZoos", "Enclosures") ?? string.Empty,
+                    SelectedValue = Model.ZooId == 0 ? string.Empty : Model.ZooId.ToString(),
+                    SelectedText = Model.AvailableZoos.FirstOrDefault(z => z.Id == Model.ZooId)?.Name,
+                    ValueField = "id",
+                    LabelField = "name",
+                    QueryParam = "query",
+                    MinCharacters = 0,
+                    IsRequired = true,
+                    HelpText = "Start typing or leave it empty to browse all zoos."
+                })
+                <span asp-validation-for="ZooId" class="text-danger"></span>
+
+                @await Html.PartialAsync("_AutocompleteDropdown", new AutocompleteDropdownViewModel
+                {
+                    FieldName = nameof(Model.ZookeeperId),
+                    LabelText = "Zookeeper",
+                    Placeholder = "Search and select a zookeeper",
+                    SearchUrl = Url.Action("SearchZookeepers", "Enclosures") ?? string.Empty,
+                    SelectedValue = Model.ZookeeperId == 0 ? string.Empty : Model.ZookeeperId.ToString(),
+                    SelectedText = Model.AvailableZookeepers.FirstOrDefault(z => z.Id == Model.ZookeeperId)?.Name,
+                    ValueField = "id",
+                    LabelField = "name",
+                    QueryParam = "query",
+                    MinCharacters = 0,
+                    IsRequired = true,
+                    HelpText = "Start typing or leave it empty to browse all zookeepers."
+                })
+                <span asp-validation-for="ZookeeperId" class="text-danger"></span>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">@(Model.Id == 0 ? "Create" : "Update")</button>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,26 @@
+@model IEnumerable<ASP.NET_projekt.Models.AnimalPhoto>
+
+@if (Model.Any())
+{
+    <div class="row g-3">
+        @foreach (var photo in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4">
+                <article class="card h-100 shadow-sm">
+                    <img src="@photo.FilePath" alt="@photo.FileName" class="card-img-top" style="object-fit: cover; height: 220px;" />
+                    <div class="card-body d-flex flex-column">
+                        <h3 class="h6 card-title text-truncate">@photo.FileName</h3>
+                        <p class="card-text mb-3">@((photo.FileSize / 1024.0).ToString("0.##")) KB</p>
+                        <button type="button" class="btn btn-outline-danger btn-sm mt-auto" onclick="deleteAnimalPhoto(@photo.Id)">Delete</button>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-secondary mb-0">
+        No photos uploaded for this animal yet.
+    </div>
+}

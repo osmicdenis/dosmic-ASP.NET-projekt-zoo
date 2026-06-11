@@ -1,0 +1,14 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Access denied</h2>
+<p>You do not have permission to access this resource.</p>
+@if (!string.IsNullOrWhiteSpace(ViewBag.ReturnUrl as string))
+{
+    <p>Attempted URL: @ViewBag.ReturnUrl</p>
+}
+<p>
+    <a href="/Account/Login">Sign in with a different account</a> |
+    <a href="/">Return to home</a>
+</p>

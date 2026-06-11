@@ -1,0 +1,31 @@
+@model ASP.NET_projekt.ViewModels.ExternalLoginConfirmationViewModel
+@{
+    ViewData["Title"] = "Complete External Login";
+}
+
+<div class="container py-4" style="max-width: 520px;">
+    <h1 class="mb-3">Complete external login</h1>
+
+    <form asp-action="ExternalLoginConfirmation" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+        <input type="hidden" asp-for="LoginProvider" />
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="OIB" class="form-label"></label>
+            <input asp-for="OIB" class="form-control" />
+            <span asp-validation-for="OIB" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="JMBG" class="form-label"></label>
+            <input asp-for="JMBG" class="form-control" />
+            <span asp-validation-for="JMBG" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Finish sign in</button>
+    </form>
+</div>
